@@ -1,6 +1,6 @@
 import os
 
-from tapas.tools import prompt_bool, download_file, init_git_repo, prompt_str
+from tapas.tools import prompt_bool, download_file, init_git_repo, prompt_str, prompt_license, generate_license_file
 
 
 # Require from user to enter parameters in this function
@@ -9,6 +9,7 @@ def ask():
     prompt_bool('git', default_value="y", prompt_string="Init git repository? [Y/n]: ")
     prompt_bool('gitignore', default_value="y", prompt_string="Create python .gitignore file? [Y/n]: ")
     prompt_bool('readme', default_value="y", prompt_string="Create README.md file? [Y/n]: ")
+    prompt_license()
     prompt_bool('travis', default_value="y", prompt_string="Create .travis.yml file? [Y/n]: ")
 
 
@@ -18,6 +19,7 @@ def post_init(
         gitignore: bool,
         readme: bool,
         travis: bool,
+        license: str,
 ):
     if gitignore:
         download_file('https://raw.githubusercontent.com/github/gitignore/master/Python.gitignore', '.gitignore')
@@ -27,6 +29,8 @@ def post_init(
 
     if not travis:
         os.remove('.travis.yml')
+
+    generate_license_file(license)
 
     if git:
         init_git_repo()
